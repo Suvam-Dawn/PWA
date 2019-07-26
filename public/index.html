@@ -72,7 +72,7 @@
 								<div class="card-body">
 									<div class="row">
 										<div class="col-lg-2 col-md-3 col-12">
-											<img src="${data.contents[i].imageUrl}" style="width: inherit;"/>
+											<img src="${data.contents[i].imageUrl}" onerror="this.src='./images/no_image_availavle.jpg'" style="width: inherit;"/>
 										</div>
 										<div class="col-lg-10 col-md-9 col-12">
 											  <a href="${data.contents[i].url}" style="font-size: 15px!important; letter-spacing: -.02rem; word-spacing: -1px;">${data.contents[i].title}</a>
