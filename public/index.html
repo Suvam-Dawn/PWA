@@ -14,16 +14,80 @@
 		<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
 		<meta name="apple-mobile-web-app-title" content="Progressive Web Application" />
 		<meta name="application-name" content="Progressive Web Application" />
+		<meta http-equiv="Content-Security-Policy" content="upgrade-insecure-requests">
 		<link rel="apple-touch-icon" href="./images/pwa.png" />
 		<link rel="icon" type="image/png" href="./images/pwa.png" sizes="32x32" />
 		<link rel="icon" type="image/png" href="./images/pwa.png" sizes="16x16" />
 		<link rel="manifest" href="./manifest.json" />
 		<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:200,300,400,500,700" />
-
-
+		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/css/toastr.min.css" />
+		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" crossorigin="anonymous">
+		<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" crossorigin="anonymous"></script>
+		<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" crossorigin="anonymous"></script>		
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/js/toastr.min.js" crossorigin="anonymous"></script>
+		<style>
+		.toast {
+		  background-color: #29434d;
+		}
+		</style>
   </head>
-  <body>
+  <body style=" background: #f1f1f1; ">
+	<nav class="navbar fixed-top navbar-dark bg-dark">
+		<div class="col-12" style="text-align: center;">
+			<p style="font-size: 20px;color: white;font-weight: bold;">Top News</p>
+		</div>
+	</nav>
+	<div class="container-fluid" style=" margin-top: 65px; ">
+		<div class="news">
+
+		</div>
+	</div>
    <script>
+		$( document ).ready(function() {
+			toastr.options = {
+				"closeButton": false,
+				"newestOnTop": true,
+				"progressBar": true,
+				"positionClass": "toast-bottom-center",
+				"preventDuplicates": false,
+				"onclick": null,
+				"showDuration": "0",
+				"hideDuration": "0",
+				"showEasing": "swing",
+				"hideEasing": "linear",
+				"showMethod": "fadeIn",
+				"hideMethod": "fadeOut"
+			}
+			toastr.info('Loading....');
+			$.ajax({
+				type: "GET",
+				url: "https://contextualwebsearch.com/api/Search/GetNewsSearch?q=top%20news&pageNumber=1&pageSize=150&autoCorrect=true",
+				success: function(data) {
+					toastr.clear();
+					let html='';
+					for(let i=0;i<data.contents.length;i++){
+						html+=`
+							<div class="card">
+								<div class="card-body">
+									<div class="row">
+										<div class="col-lg-2 col-md-3 col-12">
+											<img src="${data.contents[i].imageUrl}" style="width: inherit;"/>
+										</div>
+										<div class="col-lg-10 col-md-9 col-12">
+											  <a href="${data.contents[i].url}" style="font-size: 15px!important; letter-spacing: -.02rem; word-spacing: -1px;">${data.contents[i].title}</a>
+											  <p style="color:#006621;font-size: 14px!important;">${data.contents[i].domainName}</p>
+											  <p title="${data.contents[i].description}">${data.contents[i].description}</p>
+										</div>
+									</div>
+								</div>
+							</div>
+						`;
+					}
+					$(".news").append(html);
+				}
+			});
+		});
       if('serviceWorker' in navigator) {
         navigator.serviceWorker.register('/sw.js')
           .then(function() {
